@@ -59,3 +59,71 @@ El usuario autenticado no tiene permisos para crear productos en esta tienda (no
   "mensaje": "No tienes permisos para realizar esta acción en la tienda especificada."
 }
 ```
+
+## Ordenes
+
+### Crear Orden
+
+Permite a un cliente crear una nueva orden de compra.
+
+- **URL**: `/api/v1/ordenes`
+- **Método**: `POST`
+- **Autenticación**: Requiere `Bearer Token` del usuario cliente.
+
+#### Parámetros (JSON Body)
+
+| Campo | Tipo | Requerido | Descripción |
+| :--- | :--- | :--- | :--- |
+| `fk_tienda` | integer | Sí | ID de la tienda donde se realiza la compra. |
+| `fk_usuario_cliente` | integer | Sí | ID del usuario que realiza la compra. |
+| `productos` | array | Sí | Lista de productos a comprar. |
+
+**Estructura de `productos`:**
+
+```json
+[
+  {
+    "id_producto": 101,
+    "cantidad": 2
+  }
+]
+```
+
+#### Respuestas Posibles
+
+**201 Created**
+
+La orden fue creada exitosamente.
+
+```json
+{
+  "id": 5001,
+  "fk_tienda": 1,
+  "fk_usuario_cliente": 20,
+  "total": 51.98,
+  "estado": "pagado",
+  "creado_en": "2023-10-27T10:05:00Z"
+}
+```
+
+**400 Bad Request**
+
+Inventario insuficiente o datos inválidos.
+
+```json
+{
+  "error": "Bad Request",
+  "mensaje": "Stock insuficiente para el producto 'Camiseta Vintage' (ID: 101)."
+}
+```
+
+**401 Unauthorized**
+
+El usuario no está autenticado.
+
+```json
+{
+  "error": "Unauthorized",
+  "mensaje": "Token de autenticación inválido o ausente."
+}
+```
