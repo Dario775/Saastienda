@@ -308,3 +308,47 @@ Autenticación exitosa. Devuelve el token de acceso.
   "token_type": "bearer"
 }
 ```
+
+## Analítica
+
+### Ventas Mensuales
+
+Obtiene datos históricos de ventas mensuales para la tienda del usuario.
+
+- **URL**: `/api/v1/analitica/ventas_mensuales`
+- **Método**: `GET`
+- **Autenticación**: Requiere `Bearer Token` del usuario administrador.
+
+#### Respuestas Posibles
+
+**200 OK**
+
+Datos de ventas recuperados exitosamente.
+
+```json
+[
+  {
+    "mes": "Enero",
+    "total_ventas": 1500.00
+  },
+  {
+    "mes": "Febrero",
+    "total_ventas": 2300.50
+  },
+  {
+    "mes": "Marzo",
+    "total_ventas": 1800.00
+  }
+]
+```
+
+**401 Unauthorized**
+
+El usuario no está autenticado.
+
+```json
+{
+  "error": "Unauthorized",
+  "mensaje": "Token de autenticación inválido o ausente."
+}
+```
