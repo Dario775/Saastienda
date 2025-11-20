@@ -127,3 +127,62 @@ El usuario no está autenticado.
   "mensaje": "Token de autenticación inválido o ausente."
 }
 ```
+
+## Autenticación
+
+### Registrar Usuario
+
+Permite crear una nueva cuenta de usuario en la plataforma.
+
+- **URL**: `/api/v1/auth/register`
+- **Método**: `POST`
+- **Autenticación**: Pública.
+
+#### Parámetros (JSON Body)
+
+| Campo | Tipo | Requerido | Descripción |
+| :--- | :--- | :--- | :--- |
+| `email` | string | Sí | Correo electrónico del usuario. |
+| `password` | string | Sí | Contraseña segura. |
+
+#### Respuestas Posibles
+
+**201 Created**
+
+Usuario registrado exitosamente.
+
+```json
+{
+  "id": 20,
+  "email": "usuario@ejemplo.com",
+  "creado_en": "2023-10-27T10:10:00Z"
+}
+```
+
+### Iniciar Sesión
+
+Permite autenticar a un usuario y obtener un token de acceso.
+
+- **URL**: `/api/v1/auth/login`
+- **Método**: `POST`
+- **Autenticación**: Pública.
+
+#### Parámetros (JSON Body)
+
+| Campo | Tipo | Requerido | Descripción |
+| :--- | :--- | :--- | :--- |
+| `email` | string | Sí | Correo electrónico del usuario. |
+| `password` | string | Sí | Contraseña del usuario. |
+
+#### Respuestas Posibles
+
+**200 OK**
+
+Autenticación exitosa. Devuelve el token de acceso.
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer"
+}
+```
