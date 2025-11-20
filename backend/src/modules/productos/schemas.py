@@ -8,6 +8,12 @@ class ProductoCreate(BaseModel):
     stock: int
     descripcion: Optional[str] = None
 
+class ProductoUpdate(BaseModel):
+    nombre: Optional[str] = None
+    precio: Optional[float] = None
+    stock: Optional[int] = None
+    descripcion: Optional[str] = None
+
 class ProductoOut(ProductoCreate):
     id: int
     creado_en: datetime

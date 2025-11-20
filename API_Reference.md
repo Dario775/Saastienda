@@ -60,6 +60,82 @@ El usuario autenticado no tiene permisos para crear productos en esta tienda (no
 }
 ```
 
+### Listar Productos
+
+Permite listar todos los productos de la tienda del usuario logueado.
+
+- **URL**: `/api/v1/productos`
+- **Método**: `GET`
+- **Autenticación**: Requiere `Bearer Token` del usuario dueño de la tienda.
+
+#### Respuestas Posibles
+
+**200 OK**
+
+Lista de productos recuperada exitosamente.
+
+```json
+[
+  {
+    "id": 101,
+    "nombre": "Camiseta Vintage",
+    "precio": 25.99,
+    "stock": 50
+  },
+  {
+    "id": 102,
+    "nombre": "Pantalón Denim",
+    "precio": 45.50,
+    "stock": 30
+  }
+]
+```
+
+### Actualizar Producto
+
+Permite actualizar los datos de un producto existente.
+
+- **URL**: `/api/v1/productos/{id}`
+- **Método**: `PUT`
+- **Autenticación**: Requiere `Bearer Token` del usuario dueño de la tienda.
+
+#### Parámetros (JSON Body)
+
+| Campo | Tipo | Requerido | Descripción |
+| :--- | :--- | :--- | :--- |
+| `nombre` | string | No | Nuevo nombre del producto. |
+| `precio` | float | No | Nuevo precio. |
+| `stock` | integer | No | Nuevo stock. |
+
+#### Respuestas Posibles
+
+**200 OK**
+
+Producto actualizado exitosamente.
+
+```json
+{
+  "id": 101,
+  "nombre": "Camiseta Vintage Edición Limitada",
+  "precio": 29.99,
+  "stock": 45
+}
+```
+
+### Eliminar Producto
+
+Permite eliminar un producto existente.
+
+- **URL**: `/api/v1/productos/{id}`
+- **Método**: `DELETE`
+- **Autenticación**: Requiere `Bearer Token` del usuario dueño de la tienda.
+
+#### Respuestas Posibles
+
+**204 No Content**
+
+Producto eliminado exitosamente.
+
 ## Ordenes
 
 ### Crear Orden
@@ -115,6 +191,52 @@ Inventario insuficiente o datos inválidos.
   "error": "Bad Request",
   "mensaje": "Stock insuficiente para el producto 'Camiseta Vintage' (ID: 101)."
 }
+```
+
+**401 Unauthorized**
+
+El usuario no está autenticado.
+
+```json
+{
+  "error": "Unauthorized",
+  "mensaje": "Token de autenticación inválido o ausente."
+}
+```
+
+### Listar Ordenes
+
+Permite al administrador obtener una lista de todas las órdenes asociadas a su tienda.
+
+- **URL**: `/api/v1/ordenes`
+- **Método**: `GET`
+- **Autenticación**: Requiere `Bearer Token` del usuario administrador.
+
+#### Respuestas Posibles
+
+**200 OK**
+
+Lista de órdenes recuperada exitosamente.
+
+```json
+[
+  {
+    "id": 5001,
+    "fk_tienda": 1,
+    "fk_usuario_cliente": 20,
+    "total": 51.98,
+    "estado": "pagado",
+    "creado_en": "2023-10-27T10:05:00Z"
+  },
+  {
+    "id": 5002,
+    "fk_tienda": 1,
+    "fk_usuario_cliente": 25,
+    "total": 120.50,
+    "estado": "enviado",
+    "creado_en": "2023-10-28T14:30:00Z"
+  }
+]
 ```
 
 **401 Unauthorized**

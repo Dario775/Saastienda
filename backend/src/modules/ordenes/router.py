@@ -59,3 +59,16 @@ def create_orden(
     fake_orders_db.append(new_order)
 
     return new_order
+@router.get("/ordenes", response_model=List[OrdenOut])
+def get_ordenes(current_user: dict = Depends(get_current_user)):
+    # Simulación: Asumimos que el usuario autenticado es dueño de la tienda con ID 1
+    # En una implementación real, obtendríamos el ID de la tienda del perfil del usuario
+    tienda_id_usuario = 1
+    
+    # Filtrar la base de datos simulada para obtener solo las órdenes de esta tienda
+    ordenes_tienda = [
+        orden for orden in fake_orders_db 
+        if orden["fk_tienda"] == tienda_id_usuario
+    ]
+    
+    return ordenes_tienda

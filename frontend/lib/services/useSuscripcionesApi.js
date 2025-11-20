@@ -1,0 +1,37 @@
+import { useState } from 'react';
+
+const useSuscripcionesApi = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [data, setData] = useState(null);
+
+    const getPlanes = async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await fetch('/api/v1/suscripcion/planes');
+            const responseData = await response.json();
+
+            if (!response.ok) {
+                throw new Error(responseData.message || 'Error al obtener planes');
+            }
+
+            setData(responseData);
+            return { success: true, data: responseData };
+        } catch (err) {
+            setError(err.message);
+            return { success: false, error: err.message };
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return {
+        getPlanes,
+        isLoading,
+        error,
+        data
+    };
+};
+
+export default useSuscripcionesApi;

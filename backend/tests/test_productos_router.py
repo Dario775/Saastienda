@@ -78,3 +78,61 @@ def test_create_producto_not_owner():
     assert response.json()["detail"] == "No tienes permisos para agregar productos a esta tienda"
     
     app.dependency_overrides = {}
+
+def test_update_producto_success():
+    # 1. Setup: Create a product first (or assume one exists from previous tests/mock DB)
+    # Since the mock DB persists in memory during the test session if not cleared, 
+    # we should ensure a known state. The router has `fake_products_db` global.
+    # Ideally we'd reset it, but for this simple test we can just create one.
+    app.dependency_overrides[get_current_user] = mock_get_current_user_owner
+    
+    # Create a product to update
+    create_payload = {"nombre": "To Update", "precio": 10.0, "stock": 5}
+    create_res = client.post("/tiendas/1/productos", json=create_payload)
+    product_id = create_res.json()["id"]
+    
+    # 2. Update the product
+    update_payload = {"nombre": "Updated Name", "precio": 20.0}
+    response = client.put(f"/productos/{product_id}", json=update_payload)
+    
+    assert response.status_code == 200
+    data = response.json()
+    assert data["nombre"] == "Updated Name"
+    assert data["precio"] == 20.0
+    assert data["stock"] == 5 # Should remain unchanged
+    
+    app.dependency_overrides = {}
+
+def test_update_producto_forbidden():
+    # 1. Setup: Create a product as owner
+    app.dependency_overrides[get_current_user] = mock_get_current_user_owner
+    create_res = client.post("/tiendas/1/productos", json={"nombre": "My Product", "precio": 10, "stock": 1})
+    product_id = create_res.json()["id"]
+    
+    # 2. Try to update as another user
+    app.dependency_overrides[get_current_user] = mock_get_current_user_not_owner
+    
+    update_payload = {"nombre": "Hacked"}
+    response = client.put(f"/productos/{product_id}", json=update_payload)
+    
+    assert response.status_code == 403
+    
+    app.dependency_overrides = {}
+
+def test_delete_producto_success():
+    # 1. Setup: Create a product
+    app.dependency_overrides[get_current_user] = mock_get_current_user_owner
+    create_res = client.post("/tiendas/1/productos", json={"nombre": "To Delete", "precio": 10, "stock": 1})
+    product_id = create_res.json()["id"]
+    
+    # 2. Delete the product
+    response = client.delete(f"/productos/{product_id}")
+    
+    assert response.status_code == 204
+    
+    # 3. Verify it's gone (optional but good)
+    # We can try to update it and expect 404
+    response = client.put(f"/productos/{product_id}", json={"nombre": "Ghost"})
+    assert response.status_code == 404
+    
+    app.dependency_overrides = {}
