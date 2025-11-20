@@ -352,3 +352,91 @@ El usuario no está autenticado.
   "mensaje": "Token de autenticación inválido o ausente."
 }
 ```
+
+## Notificaciones
+
+### Listar Notificaciones
+
+Obtiene una lista de notificaciones recientes para la tienda del usuario autenticado.
+
+- **URL**: `/api/v1/notificaciones`
+- **Método**: `GET`
+- **Autenticación**: Requiere `Bearer Token` del usuario administrador.
+
+#### Respuestas Posibles
+
+**200 OK**
+
+Lista de notificaciones recuperada exitosamente.
+
+```json
+[
+  {
+    "id": 1,
+    "mensaje": "Nueva orden recibida #5001",
+    "tipo": "orden",
+    "leida": false,
+    "creado_en": "2023-10-27T10:05:00Z"
+  },
+  {
+    "id": 2,
+    "mensaje": "Stock bajo en producto 'Camiseta Vintage'",
+    "tipo": "inventario",
+    "leida": true,
+    "creado_en": "2023-10-26T15:30:00Z"
+  }
+]
+```
+
+**401 Unauthorized**
+
+El usuario no está autenticado.
+
+```json
+{
+  "error": "Unauthorized",
+  "mensaje": "Token de autenticación inválido o ausente."
+}
+```
+
+### Marcar Notificación como Leída
+
+Marca una notificación específica como leída.
+
+- **URL**: `/api/v1/notificaciones/{id}/leer`
+- **Método**: `POST`
+- **Autenticación**: Requiere `Bearer Token` del usuario administrador.
+
+#### Parámetros de URL
+
+| Parámetro | Tipo | Descripción |
+| :--- | :--- | :--- |
+| `id` | integer | ID de la notificación a marcar como leída. |
+
+#### Respuestas Posibles
+
+**204 No Content**
+
+Notificación marcada como leída exitosamente.
+
+**401 Unauthorized**
+
+El usuario no está autenticado.
+
+```json
+{
+  "error": "Unauthorized",
+  "mensaje": "Token de autenticación inválido o ausente."
+}
+```
+
+**404 Not Found**
+
+La notificación no existe.
+
+```json
+{
+  "error": "Not Found",
+  "mensaje": "Notificación no encontrada."
+}
+```
