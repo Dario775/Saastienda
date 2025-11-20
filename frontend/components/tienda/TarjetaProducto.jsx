@@ -1,9 +1,13 @@
 import React from 'react';
+import { useCart } from '../../context/CartProvider';
 
 const TarjetaProducto = ({ producto }) => {
+    const { addToCart } = useCart();
+
     const handleAddToCart = () => {
-        // Placeholder for add to cart logic
-        console.log('Añadir al carrito:', producto.nombre);
+        addToCart(producto);
+        // Opcional: Mostrar feedback visual (toast, etc.)
+        console.log('Añadido al carrito:', producto.nombre);
     };
 
     return (
