@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi.security import OAuth2PasswordBearer
 from .schemas import UserRegister, UserLogin, Token
 from typing import Dict
 
@@ -54,3 +55,10 @@ def login(user: UserLogin):
     
     access_token = create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    # Simulación: Decodificar token y devolver usuario
+    # En producción: decodificar JWT, verificar expiración, buscar usuario en DB
+    return {"id": 1, "email": "usuario@ejemplo.com", "role": "owner"}

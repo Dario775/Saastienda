@@ -1,41 +1,73 @@
 import { useState } from 'react';
 
 const useTiendasApi = () => {
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [data, setData] = useState(null);
 
-    const crearTienda = async (datos) => {
-        setLoading(true);
+    const registerDominio = async (tiendaId, dominio) => {
+        setIsLoading(true);
+        setError(null);
         try {
-            // Simulación de obtención de token (ej. desde localStorage o Context)
-            const token = localStorage.getItem('authToken') || 'mock_token_123';
-
-            const response = await fetch('/api/v1/tiendas', {
+            const token = localStorage.getItem('authToken');
+            const response = await fetch(`/api/v1/tiendas/${tiendaId}/dominio`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(datos),
+                body: JSON.stringify({ nombre_dominio: dominio }),
             });
 
-            const data = await response.json();
+            const responseData = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || 'Error al crear la tienda');
+                throw new Error(responseData.message || 'Error al registrar el dominio');
             }
 
-            return { success: true, data };
-        } catch (error) {
-            console.error('API Error:', error);
-            return { success: false, error: error.message };
+            setData(responseData);
+            return { success: true, data: responseData };
+        } catch (err) {
+            setError(err.message);
+            return { success: false, error: err.message };
         } finally {
-            setLoading(false);
+            setIsLoading(false);
+        }
+    };
+
+    const getDominioStatus = async (tiendaId) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const token = localStorage.getItem('authToken');
+            const response = await fetch(`/api/v1/tiendas/${tiendaId}/dominio`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            const responseData = await response.json();
+
+            if (!response.ok) {
+                throw new Error(responseData.message || 'Error al obtener el estado del dominio');
+            }
+
+            setData(responseData);
+            return { success: true, data: responseData };
+        } catch (err) {
+            setError(err.message);
+            return { success: false, error: err.message };
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return {
-        crearTienda,
-        loading,
+        registerDominio,
+        getDominioStatus,
+        isLoading,
+        error,
+        data
     };
 };
 

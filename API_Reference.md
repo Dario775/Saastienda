@@ -136,6 +136,98 @@ Permite eliminar un producto existente.
 
 Producto eliminado exitosamente.
 
+### Registrar Dominio Personalizado
+
+Permite al dueño de la tienda registrar un dominio personalizado.
+
+- **URL**: `/api/v1/tiendas/{id}/dominio`
+- **Método**: `POST`
+- **Autenticación**: Requiere `Bearer Token` del usuario dueño de la tienda.
+
+#### Parámetros (JSON Body)
+
+| Campo | Tipo | Requerido | Descripción |
+| :--- | :--- | :--- | :--- |
+| `nombre_dominio` | string | Sí | El nombre de dominio a registrar (ej: `mitienda.com`). |
+
+#### Respuestas Posibles
+
+**202 Accepted**
+
+La solicitud de registro de dominio ha sido aceptada y la validación está en curso.
+
+```json
+{
+  "mensaje": "Dominio registrado. Validación en curso.",
+  "estado": "PENDIENTE"
+}
+```
+
+**401 Unauthorized**
+
+El usuario no está autenticado.
+
+```json
+{
+  "error": "Unauthorized",
+  "mensaje": "Token de autenticación inválido o ausente."
+}
+```
+
+**403 Forbidden**
+
+El usuario no es el dueño de la tienda.
+
+```json
+{
+  "error": "Forbidden",
+  "mensaje": "No tienes permisos para modificar esta tienda."
+}
+```
+
+### Obtener Estado de Dominio
+
+Obtiene el estado de la verificación del dominio personalizado.
+
+- **URL**: `/api/v1/tiendas/{id}/dominio`
+- **Método**: `GET`
+- **Autenticación**: Requiere `Bearer Token` del usuario dueño de la tienda.
+
+#### Respuestas Posibles
+
+**200 OK**
+
+Estado del dominio recuperado exitosamente.
+
+```json
+{
+  "dominio": "mitienda.com",
+  "estado": "VERIFICADO"
+}
+```
+
+**401 Unauthorized**
+
+El usuario no está autenticado.
+
+```json
+{
+  "error": "Unauthorized",
+  "mensaje": "Token de autenticación inválido o ausente."
+}
+```
+
+**403 Forbidden**
+
+El usuario no es el dueño de la tienda.
+
+```json
+{
+  "error": "Forbidden",
+  "mensaje": "No tienes permisos para ver esta información."
+}
+```
+
 ## Ordenes
 
 ### Crear Orden
