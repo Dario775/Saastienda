@@ -11,14 +11,17 @@ const useAnaliticaApi = () => {
         try {
             const token = localStorage.getItem('authToken');
             const response = await fetch('/api/v1/analitica/ventas_mensuales', {
+                method: 'GET',
                 headers: {
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
             });
+
             const responseData = await response.json();
 
             if (!response.ok) {
-                throw new Error(responseData.message || 'Error al obtener ventas mensuales');
+                throw new Error(responseData.message || 'Error al obtener las ventas mensuales');
             }
 
             setData(responseData);

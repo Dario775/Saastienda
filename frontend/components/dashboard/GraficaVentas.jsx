@@ -2,22 +2,22 @@ import React, { useEffect, useState } from 'react';
 import useAnaliticaApi from '../../lib/services/useAnaliticaApi';
 
 const GraficaVentas = () => {
-    const { getVentasMensuales, isLoading, error, data } = useAnaliticaApi();
+    const { getVentasMensuales, isLoading, error } = useAnaliticaApi();
     const [ventas, setVentas] = useState([]);
 
     useEffect(() => {
-        const cargarVentas = async () => {
+        const fetchVentas = async () => {
             const result = await getVentasMensuales();
             if (result.success) {
                 setVentas(result.data);
             }
         };
-        cargarVentas();
+        fetchVentas();
     }, []);
 
     if (isLoading) {
         return (
-            <div className="bg-white p-6 rounded-lg shadow-md flex justify-center items-center h-64">
+            <div className="bg-white shadow rounded-lg p-6 flex justify-center items-center h-80">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
             </div>
         );
@@ -25,51 +25,39 @@ const GraficaVentas = () => {
 
     if (error) {
         return (
-            <div className="bg-white p-6 rounded-lg shadow-md flex justify-center items-center h-64">
+            <div className="bg-white shadow rounded-lg p-6 flex justify-center items-center h-80">
                 <p className="text-red-600">Error al cargar datos de ventas: {error}</p>
             </div>
         );
     }
 
-    // Encontrar el valor máximo para escalar las barras
-    const maxVentas = ventas.length > 0 ? Math.max(...ventas.map(v => v.total_ventas)) : 0;
-
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold text-gray-800 mb-6">Ventas Mensuales</h3>
-
-            {ventas.length > 0 ? (
-                <div className="flex items-end justify-between h-64 space-x-2">
-                    {ventas.map((venta, index) => {
-                        // Calcular altura relativa (mínimo 10% para visibilidad)
-                        const heightPercentage = maxVentas > 0 ? (venta.total_ventas / maxVentas) * 100 : 0;
-                        const displayHeight = Math.max(heightPercentage, 5);
-
-                        return (
-                            <div key={index} className="flex flex-col items-center flex-1 group">
-                                <div className="relative flex flex-col justify-end w-full h-full">
-                                    {/* Tooltip simulado */}
-                                    <div className="opacity-0 group-hover:opacity-100 absolute bottom-full mb-2 w-full text-center transition-opacity duration-200">
-                                        <span className="bg-gray-800 text-white text-xs rounded py-1 px-2">
-                                            ${venta.total_ventas.toLocaleString()}
-                                        </span>
-                                    </div>
-                                    {/* Barra */}
+        <div className="bg-white shadow rounded-lg p-6">
+            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-6">
+                Ventas Mensuales
+            </h3>
+            <div className="h-64 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex flex-col justify-center items-center p-4 overflow-y-auto">
+                <p className="text-gray-500 mb-4 font-medium">Visualización de Gráfica (Simulada)</p>
+                <div className="w-full space-y-3">
+                    {ventas.length > 0 ? (
+                        ventas.map((venta, index) => (
+                            <div key={index} className="flex items-center text-sm">
+                                <span className="w-20 font-medium text-gray-600">{venta.mes}</span>
+                                <div className="flex-1 mx-3 bg-gray-200 rounded-full h-4 overflow-hidden">
                                     <div
-                                        className="w-full bg-indigo-500 rounded-t hover:bg-indigo-600 transition-all duration-300"
-                                        style={{ height: `${displayHeight}%` }}
+                                        className="bg-indigo-500 h-full rounded-full"
+                                        style={{ width: `${Math.min((venta.total_ventas / 3000) * 100, 100)}%` }}
+                                        title={`$${venta.total_ventas}`}
                                     ></div>
                                 </div>
-                                <p className="text-xs text-gray-600 mt-2 truncate w-full text-center">{venta.mes}</p>
+                                <span className="w-20 text-right font-semibold text-gray-900">${venta.total_ventas}</span>
                             </div>
-                        );
-                    })}
+                        ))
+                    ) : (
+                        <p className="text-gray-400 italic text-center">No hay datos disponibles.</p>
+                    )}
                 </div>
-            ) : (
-                <div className="flex justify-center items-center h-64 text-gray-500">
-                    No hay datos de ventas disponibles.
-                </div>
-            )}
+            </div>
         </div>
     );
 };
