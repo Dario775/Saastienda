@@ -101,3 +101,20 @@ def delete_product(
     # 3. Eliminar
     fake_products_db.pop(product_index)
     return None
+
+@router.get("/tienda/{slug}/productos/buscar", response_model=List[ProductoOut])
+def search_products(slug: str, query: str):
+    # 1. Validar tienda (Simulación: solo aceptamos "mi-tienda" o "tienda-prueba")
+    # En un caso real, buscaríamos la tienda por slug en la DB
+    if slug not in ["mi-tienda", "tienda-prueba"]:
+         raise HTTPException(status_code=404, detail="Tienda no encontrada")
+
+    # 2. Filtrar productos
+    # Buscamos coincidencias en nombre o descripción (case-insensitive)
+    query_lower = query.lower()
+    filtered_products = [
+        p for p in fake_products_db
+        if query_lower in p["nombre"].lower() or (p.get("descripcion") and query_lower in p["descripcion"].lower())
+    ]
+
+    return filtered_products

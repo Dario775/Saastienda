@@ -47,9 +47,31 @@ const useTiendaPublicaApi = () => {
         }
     };
 
+    const buscarProductos = async (tiendaSlug, query) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await fetch(`/api/v1/tienda/${tiendaSlug}/productos/buscar?query=${encodeURIComponent(query)}`);
+            const responseData = await response.json();
+
+            if (!response.ok) {
+                throw new Error(responseData.message || 'Error al buscar productos');
+            }
+
+            setData(responseData);
+            return { success: true, data: responseData };
+        } catch (err) {
+            setError(err.message);
+            return { success: false, error: err.message };
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return {
         getProductosPublicos,
         getDetalleProducto,
+        buscarProductos,
         isLoading,
         error,
         data

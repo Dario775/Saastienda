@@ -573,3 +573,38 @@ El usuario no está autenticado.
   "mensaje": "Token de autenticación inválido o ausente."
 }
 ```
+
+## Tienda Pública
+
+### Buscar Productos
+
+Permite buscar productos en una tienda específica por nombre o descripción.
+
+- **URL**: `/api/v1/tienda/{slug}/productos/buscar`
+- **Método**: `GET`
+- **Autenticación**: Pública.
+
+#### Parámetros de Consulta (Query Params)
+
+| Parámetro | Tipo | Requerido | Descripción |
+| :--- | :--- | :--- | :--- |
+| `query` | string | Sí | Término de búsqueda (nombre o descripción). |
+
+#### Respuestas Posibles
+
+**200 OK**
+
+Lista de productos filtrada recuperada exitosamente.
+
+```json
+[
+  {
+    "id": 101,
+    "nombre": "Camiseta Vintage",
+    "descripcion": "Camiseta de algodón 100% estilo retro.",
+    "precio": 25.99,
+    "stock": 50,
+    "imagen": "url_imagen.jpg"
+  }
+]
+```

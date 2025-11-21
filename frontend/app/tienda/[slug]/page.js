@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import useTiendaPublicaApi from '../../../lib/services/useTiendaPublicaApi';
 import TarjetaProducto from '../../../components/tienda/TarjetaProducto';
+import BarraDeBusqueda from '../../../components/tienda/BarraDeBusqueda';
 
 const TiendaPage = ({ params }) => {
     const { slug } = params;
@@ -34,6 +35,7 @@ const TiendaPage = ({ params }) => {
             </header>
 
             <main className="flex-grow container mx-auto px-4 py-8">
+                <BarraDeBusqueda />
                 {isLoading ? (
                     <div className="flex justify-center items-center h-64">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
