@@ -5,11 +5,11 @@ const WebhookSimulator = () => {
     const { sendPaymentWebhook, isLoading } = useWebhooksApi();
     const [ordenId, setOrdenId] = useState('');
     const [estado, setEstado] = useState('PAGADO');
-    const [mensaje, setMensaje] = useState({ type: '', text: '' });
+    const [mensaje, setMensaje] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMensaje({ type: '', text: '' });
+        setMensaje(null);
 
         if (!ordenId) {
             setMensaje({ type: 'error', text: 'Por favor ingresa un ID de orden.' });
@@ -68,7 +68,7 @@ const WebhookSimulator = () => {
                     </button>
                 </div>
             </form>
-            {mensaje.text && (
+            {mensaje && (
                 <div className={`mt-4 p-4 rounded-md ${mensaje.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                     {mensaje.text}
                 </div>

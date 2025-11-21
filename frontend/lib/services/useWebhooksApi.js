@@ -18,14 +18,14 @@ const useWebhooksApi = () => {
                 body: JSON.stringify({ orden_id: ordenId, estado: estado }),
             });
 
-            const data = await response.json();
+            const responseData = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || 'Error al enviar el webhook de pago');
+                throw new Error(responseData.message || 'Error al enviar el webhook');
             }
 
             setSuccess(true);
-            return { success: true, data };
+            return { success: true, data: responseData };
         } catch (err) {
             setError(err.message);
             return { success: false, error: err.message };
