@@ -532,3 +532,44 @@ La notificación no existe.
   "mensaje": "Notificación no encontrada."
 }
 ```
+
+## Suscripciones
+
+### Activar Plan de Suscripción
+
+Activa un plan de suscripción específico para la tienda del usuario autenticado.
+
+- **URL**: `/api/v1/suscripcion/activar`
+- **Método**: `POST`
+- **Autenticación**: Requiere `Bearer Token` del usuario dueño de la tienda.
+
+#### Parámetros (JSON Body)
+
+| Campo | Tipo | Requerido | Descripción |
+| :--- | :--- | :--- | :--- |
+| `plan_id` | integer | Sí | ID del plan de suscripción a activar. |
+
+#### Respuestas Posibles
+
+**200 OK**
+
+El plan de suscripción ha sido activado exitosamente.
+
+```json
+{
+  "mensaje": "Plan activado exitosamente.",
+  "plan_id": 2,
+  "estado": "activo"
+}
+```
+
+**401 Unauthorized**
+
+El usuario no está autenticado.
+
+```json
+{
+  "error": "Unauthorized",
+  "mensaje": "Token de autenticación inválido o ausente."
+}
+```

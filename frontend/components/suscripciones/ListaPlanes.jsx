@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import useSuscripcionesApi from '../../lib/services/useSuscripcionesApi';
 
 const ListaPlanes = () => {
-    const { getPlanes, isLoading, error, data } = useSuscripcionesApi();
+    const { getPlanes, activarPlan, isLoading, error, data } = useSuscripcionesApi();
     const [planes, setPlanes] = useState([]);
+    const [mensaje, setMensaje] = useState({ type: '', text: '' });
 
     useEffect(() => {
         const fetchPlanes = async () => {
@@ -15,12 +16,18 @@ const ListaPlanes = () => {
         fetchPlanes();
     }, []);
 
-    const handleSubscribe = (planId) => {
-        console.log(`Suscribiéndose al plan ${planId}`);
-        // Aquí iría la lógica de redirección a checkout o modal de pago
+    const handleSubscribe = async (planId) => {
+        setMensaje({ type: '', text: '' });
+        const result = await activarPlan(planId);
+
+        if (result.success) {
+            setMensaje({ type: 'success', text: result.data.mensaje });
+        } else {
+            setMensaje({ type: 'error', text: result.error || 'Error al activar el plan.' });
+        }
     };
 
-    if (isLoading) {
+    if (isLoading && planes.length === 0) {
         return (
             <div className="flex justify-center items-center min-h-[200px]">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -28,7 +35,7 @@ const ListaPlanes = () => {
         );
     }
 
-    if (error) {
+    if (error && planes.length === 0) {
         return (
             <div className="text-center p-6 bg-red-50 rounded-lg">
                 <p className="text-red-600">Error al cargar planes: {error}</p>
@@ -46,6 +53,11 @@ const ListaPlanes = () => {
                     <p className="mt-4 text-xl text-gray-600">
                         Elige el plan perfecto para tu negocio
                     </p>
+                    {mensaje.text && (
+                        <div className={`mt-4 p-4 rounded-md ${mensaje.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {mensaje.text}
+                        </div>
+                    )}
                 </div>
 
                 <div className="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
@@ -76,9 +88,10 @@ const ListaPlanes = () => {
                                     <div className="mt-8">
                                         <button
                                             onClick={() => handleSubscribe(plan.id)}
-                                            className="w-full bg-indigo-600 border border-transparent rounded-md py-3 px-5 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+                                            disabled={isLoading}
+                                            className={`w-full bg-indigo-600 border border-transparent rounded-md py-3 px-5 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         >
-                                            Suscribirse
+                                            {isLoading ? 'Procesando...' : 'Suscribirse'}
                                         </button>
                                     </div>
                                 </div>
